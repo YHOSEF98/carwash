@@ -1,12 +1,12 @@
 from django.db import models
 
 # Create your models here.
-class Empresa(models.Model):
+class Company(models.Model):
     tipoidentificacion = models.CharField(max_length=50)
     identificacion = models.IntegerField()
-    nombre = models.CharField(max_length=150)
-    direccion = models.CharField(max_length=150, blank=True, null=True)
-    telefono = models.CharField(max_length=50, blank=True, null=True)
+    name = models.CharField(max_length=150)
+    address = models.CharField(max_length=150, blank=True, null=True)
+    phone = models.CharField(max_length=50, blank=True, null=True)
     email = models.CharField(max_length=50, blank=True, null=True)
 
     class meta:
@@ -14,7 +14,7 @@ class Empresa(models.Model):
         verbose_name_plural = 'Empresas'
 
 class Category(models.Model):
-    empresa = models.ForeignKey(Empresa)
+    empresa = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     description =  models.CharField(max_length=150, blank=True, null=True)
 
@@ -23,8 +23,8 @@ class Category(models.Model):
         verbose_name_plural = 'Categorias'
 
 class Product(models.Model):
-    empresa = models.ForeignKey(Empresa)
-    category = models.ForeignKey(Category)
+    empresa = models.ForeignKey(Company, on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
     description = models.CharField(max_length=150, blank=True, null=True)
 
@@ -33,7 +33,7 @@ class Product(models.Model):
         verbose_name_plural = 'Productos'
 
 class Employee(models.Model):
-    empresa = models.ForeignKey(Empresa)
+    empresa = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
     document =models.CharField(max_length=19)
     address = models.CharField(max_length=150, blank=True, null=True)
@@ -44,7 +44,7 @@ class Employee(models.Model):
         verbose_name_plural = 'Empleados'
 
 class Client(models.Model):
-    empresa = models.ForeignKey(Empresa)
+    empresa = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
     phone = models.CharField(max_length=15)
     email = models.EmailField()
@@ -55,6 +55,7 @@ class Client(models.Model):
         verbose_name_plural = 'Clientes'
 
 class Sale(models.Model):
+    empresa = models.ForeignKey(Company, on_delete=models.CASCADE)
     cliente = models.ForeignKey(Client, on_delete=models.CASCADE, null=True, blank=True)
     placa = models.CharField(max_length=6)
     date_joined = models.DateField()
