@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 # Create your models here.
 class Company(models.Model):
@@ -9,6 +10,10 @@ class Company(models.Model):
     phone = models.CharField(max_length=50, blank=True, null=True)
     email = models.CharField(max_length=50, blank=True, null=True)
 
+    def __str__(self):
+        return self.name
+    
+
     class meta:
         verbose_name = 'Empresa'
         verbose_name_plural = 'Empresas'
@@ -17,6 +22,9 @@ class Category(models.Model):
     empresa = models.ForeignKey(Company, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     description =  models.CharField(max_length=150, blank=True, null=True)
+
+    def __str__(self):
+        return self.name
 
     class meta:
         verbose_name = 'Categoria'
@@ -27,6 +35,16 @@ class Product(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     name = models.CharField(max_length=150)
     description = models.CharField(max_length=150, blank=True, null=True)
+    preciocompra = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    precioventa = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True)
+    cantidad = models.IntegerField(blank=True, null=True)
+    image = models.ImageField(upload_to='product/%Y/%m/%d', null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    inventoriable = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.name
 
     class meta:
         verbose_name = 'Producto'
@@ -38,6 +56,9 @@ class Employee(models.Model):
     document =models.CharField(max_length=19)
     address = models.CharField(max_length=150, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
     
     class meta:
         verbose_name = 'Empleado'
@@ -49,6 +70,9 @@ class Client(models.Model):
     phone = models.CharField(max_length=15)
     email = models.EmailField()
     address = models.CharField(max_length=150)
+
+    def __str__(self):
+        return self.name
 
     class meta:
         verbose_name = 'Cliente'
@@ -63,6 +87,9 @@ class Sale(models.Model):
     iva = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     total = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
 
+    def __str__(self):
+        return self.name
+
     class meta:
         verbose_name = 'Venta'
         verbose_name_plural = 'Ventas'
@@ -73,6 +100,9 @@ class DetSale(models.Model):
     precio = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
     cantidad = models.IntegerField(default=0)
     subtotal = models.DecimalField(default=0.00, max_digits=9, decimal_places=2)
+
+    def __str__(self):
+        return self.name
 
     class meta:
         verbose_name = 'Detalle de venta'

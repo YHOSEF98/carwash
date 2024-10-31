@@ -5,6 +5,12 @@ from api import views
 #importar las view
 router=routers.DefaultRouter()
 router.register(r'company', views.CompanyViewSet)
+router.register(r'category', views.CategoryViewSet)
+router.register(r'product', views.ProductViewSet)
+router.register(r'employee', views.EmployeeViewSet)
+router.register(r'client', views.ClientViewSet)
+router.register(r'sale', views.SaleViewSet)
+router.register(r'detsale', views.DetSaleViewSet)
 
 
 urlpatterns = [
