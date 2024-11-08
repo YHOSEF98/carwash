@@ -8,6 +8,7 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    empresa = CompanySerializer()
     class Meta:
         model = Category
         fields = '__all__'

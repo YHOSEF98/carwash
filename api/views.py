@@ -2,10 +2,16 @@ from rest_framework.generics import ListAPIView
 from rest_framework import viewsets
 from .models import *
 from .serializers import *
+from django.forms import model_to_dict
 
 # Create your views here.
-# class CategoryListAPIView(ListAPIView):
-#     queryset = Category.objects.filter()
+class CategoryListAPIView(ListAPIView):
+    serializer_class = CategorySerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        return Category.objects.filter(empresa=user.company)
+
 
 
 class CompanyViewSet(viewsets.ModelViewSet):
