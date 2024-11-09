@@ -2,7 +2,7 @@ from rest_framework.generics import ListAPIView
 from rest_framework import viewsets
 from .models import *
 from .serializers import *
-from django.forms import model_to_dict
+
 
 # Create your views here.
 class CategoryListAPIView(ListAPIView):

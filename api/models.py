@@ -1,5 +1,8 @@
 from django.db import models
 from django.utils import timezone
+from django.forms import model_to_dict
+
+from carwash import settings
 
 # Create your models here.
 class Company(models.Model):
@@ -13,6 +16,10 @@ class Company(models.Model):
     def __str__(self):
         return self.name
     
+    def toJSON(self):
+        item = model_to_dict(self)
+        return item
+    
 
     class meta:
         verbose_name = 'Empresa'
@@ -25,6 +32,11 @@ class Category(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['empresa'] = self.empresa.toJSON()
+        return item
 
     class meta:
         verbose_name = 'Categoria'
@@ -45,6 +57,17 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item["category"] = self.category.toJSON()
+        item["image"] = self.get_image()
+        return item
+    
+    def get_image(self):
+        if self.image:
+            return f'{settings.MEDIA_URL}{self.image}'
+        return f'{settings.STATIC_URL}img/empty.png'
 
     class meta:
         verbose_name = 'Producto'
@@ -60,6 +83,11 @@ class Employee(models.Model):
     def __str__(self):
         return self.name
     
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['empresa'] = self.empresa.toJSON()
+        return item
+    
     class meta:
         verbose_name = 'Empleado'
         verbose_name_plural = 'Empleados'
@@ -73,6 +101,11 @@ class Client(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['empresa'] = self.empresa.toJSON()
+        return item
 
     class meta:
         verbose_name = 'Cliente'
@@ -89,6 +122,16 @@ class Sale(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def toJSON(self):
+        item = model_to_dict(self)
+        item['empresa'] = self.empresa.toJSON()
+        item['date_joined'] = self.date_joined.strftime('%Y-%m-%d')
+        item['subtotal'] = f'{self.subtotal:.2f}'
+        item['iva'] = f'{self.iva:.2f}'
+        item['total'] = f'{self.total:.2f}'
+        item['prductsale'] = [i.toJSON() for i in self.setsale_set.all()]
+        return item
 
     class meta:
         verbose_name = 'Venta'
@@ -103,6 +146,14 @@ class DetSale(models.Model):
 
     def __str__(self):
         return self.name
+    
+    def toJSON(self):
+        item = model_to_dict(self, exclude=['sale'])
+        item['producto'] = self.producto.toJSON()
+        item['precio'] = f'{self.precio:.2f}'
+        item['cantidad'] = self.cantidad
+        item['subtotal'] = f'{self.subtotal:.2f}'
+        return item
 
     class meta:
         verbose_name = 'Detalle de venta'
